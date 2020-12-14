@@ -7,4 +7,3 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} stomptalk/include)
 
 add_executable(purestomp main.c)
 target_link_libraries(purestomp PRIVATE stomptalk)
-
