@@ -1,18 +1,19 @@
 #include "stomptalk/parser.h"
+
 #include <string.h>
 #include <stdio.h>
 
-int at_frame(struct stomptalk_parser* parser, const char* at);
+int at_frame(stomptalk_parser* parser, const char* at);
 
-int at_method(struct stomptalk_parser* parser, const char *at, size_t length);
+int at_method(stomptalk_parser* parser, const char *at, size_t length);
 
-int at_hdr_key(struct stomptalk_parser* parser, const char *at, size_t length);
+int at_hdr_key(stomptalk_parser* parser, const char *at, size_t length);
 
-int at_hdr_val(struct stomptalk_parser* parser, const char *at, size_t length);
+int at_hdr_val(stomptalk_parser* parser, const char *at, size_t length);
 
-int at_body(struct stomptalk_parser* parser, const char *at, size_t length);
+int at_body(stomptalk_parser* parser, const char *at, size_t length);
 
-int at_frame_end(struct stomptalk_parser* parser, const char*);
+int at_frame_end(stomptalk_parser* parser, const char*);
 
 size_t connected_count = 0;
 size_t frame_count = 0;
@@ -80,6 +81,8 @@ int main()
             "receipt:77\r\n"
             "\r\n\0";
 
+    stomptalk_parser *parser = stomptalk_parser_new();
+
     stomptalk_parser_hook hook = {
         .on_frame = &at_frame,
         .on_method = &at_method,
@@ -88,7 +91,7 @@ int main()
         .on_frame_end = &at_frame_end
     };
 
-    stomptalk_parser *parser = stomptalk_parser_new();
+    stomptalk_set_hook(parser, &hook, 0);
 
     // 100 million of frames
     // on my pc it takes about 17 seconds
@@ -111,7 +114,7 @@ int main()
             //chunk_size = rand() % (size / 5);
             size_t readsize = chunk_size < needle ? chunk_size :needle;
             // парсим
-            size_t rc = stomptalk_parser_execute(parser, &hook, data, readsize);
+            size_t rc = stomptalk_parser_execute(parser, data, readsize);
             if (rc != readsize)
             {
                 // it's error!
@@ -133,16 +136,17 @@ int main()
     fprintf(stdout, "connected %zu, frame %zu\n", connected_count, frame_count);
 
     stomptalk_parser_free(parser);
+
     return 0;
 }
 
-int at_frame(struct stomptalk_parser* parser, const char* at)
+int at_frame(stomptalk_parser* parser, const char* at)
 {
     // no error
     return 0;
 }
 
-int at_method(struct stomptalk_parser* parser, const char* at, size_t length)
+int at_method(stomptalk_parser* parser, const char* at, size_t length)
 {
 //    // detect method using memcmp
 //    static const char connected_method[] = "CONNECTED";
@@ -160,22 +164,22 @@ int at_method(struct stomptalk_parser* parser, const char* at, size_t length)
     return 0;
 }
 
-int at_hdr_key(struct stomptalk_parser* parser, const char* at, size_t length)
+int at_hdr_key(stomptalk_parser* parser, const char* at, size_t length)
 {
     return 0;
 }
 
-int at_hdr_val(struct stomptalk_parser* parser, const char* at, size_t length)
+int at_hdr_val(stomptalk_parser* parser, const char* at, size_t length)
 {
     return 0;
 }
 
-int at_body(struct stomptalk_parser* parser, const char* at, size_t length)
+int at_body(stomptalk_parser* parser, const char* at, size_t length)
 {
     return 0;
 }
 
-int at_frame_end(struct stomptalk_parser* parser, const char* at)
+int at_frame_end(stomptalk_parser* parser, const char* at)
 {
     ++frame_count;
     // no error
