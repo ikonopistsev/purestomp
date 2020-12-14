@@ -88,6 +88,7 @@ int main()
         .on_method = &at_method,
         .on_hdr_key = &at_hdr_key,
         .on_hdr_val = &at_hdr_val,
+        .on_body = at_body,
         .on_frame_end = &at_frame_end
     };
 
