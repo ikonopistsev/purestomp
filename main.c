@@ -93,9 +93,10 @@ int main()
 
     stomptalk_set_hook(parser, &hook, 0);
 
-    // 100 million of frames
+    // parse 100 million of frames
     // on my pc it takes about 17 seconds
-    // ./purestomp  16,72s user 0,00s system 99% cpu 16,740 total
+    // time ./purestomp  16,72s user 0,00s system 99% cpu 16,740 total
+    // it over 5 million request per second
 
     size_t count = 10000000;
     for (size_t i = 0; i < count; ++i)
