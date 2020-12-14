@@ -84,12 +84,12 @@ int main()
     stomptalk_parser *parser = stomptalk_parser_new();
 
     stomptalk_parser_hook hook = {
-        .on_frame = &at_frame,
-        .on_method = &at_method,
-        .on_hdr_key = &at_hdr_key,
-        .on_hdr_val = &at_hdr_val,
+        .on_frame = at_frame,
+        .on_method = at_method,
+        .on_hdr_key = at_hdr_key,
+        .on_hdr_val = at_hdr_val,
         .on_body = at_body,
-        .on_frame_end = &at_frame_end
+        .on_frame_end = at_frame_end
     };
 
     stomptalk_set_hook(parser, &hook, 0);
