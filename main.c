@@ -160,7 +160,7 @@ int at_method(stomptalk_parser* parser, const char* at, size_t length)
 //    }
 
     // or detect using stomptalk_eval_method
-    if (stomptalk_connected == stomptalk_eval_method(at, length))
+    if (st_method_connected == stomptalk_eval_method(at, length))
         ++connected_count;
 
     return 0;
