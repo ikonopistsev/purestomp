@@ -179,6 +179,8 @@ int at_hdr_val(stomptalk_parser* parser, const char* at, size_t length)
 {
     if (header_num_id == st_header_content_length)
     {
+        header_num_id = st_header_none;
+
         int64_t rc = stomptalk_antoull(at, length);
         if (rc < 0)
         {
