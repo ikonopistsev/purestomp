@@ -17,6 +17,8 @@ int at_frame_end(stomptalk_parser* parser, const char*);
 
 size_t connected_count = 0;
 size_t frame_count = 0;
+size_t header_num_id = 0;
+size_t content_length = 0;
 
 int main()
 {
@@ -168,11 +170,25 @@ int at_method(stomptalk_parser* parser, const char* at, size_t length)
 
 int at_hdr_key(stomptalk_parser* parser, const char* at, size_t length)
 {
+    header_num_id = stomptalk_eval_header(at, length);
+
     return 0;
 }
 
 int at_hdr_val(stomptalk_parser* parser, const char* at, size_t length)
 {
+    if (header_num_id == st_header_content_length)
+    {
+        int64_t rc = stomptalk_antoull(at, length);
+        if (rc < 0)
+        {
+            // parse error
+            return rc;
+        }
+
+        content_length = rc;
+    }
+
     return 0;
 }
 
