@@ -185,10 +185,10 @@ int at_hdr_val(stomptalk_parser* parser, const char* at, size_t length)
         if (rc < 0)
         {
             // parse error
-            return rc;
+            return -1;
         }
 
-        content_length = rc;
+        content_length = (size_t)rc;
     }
 
     return 0;
