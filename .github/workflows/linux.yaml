@@ -22,7 +22,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@master
-
+        with:
+          submodules: true
       - uses: lukka/get-cmake@latest
       - name: dir
         run: find $RUNNER_WORKSPACE
