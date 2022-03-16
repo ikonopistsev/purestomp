@@ -5,9 +5,9 @@
 
 int at_frame(stomptalk_parser* parser, const char* at);
 
-int at_method(stomptalk_parser* parser, const char *at, size_t length);
+int at_method(stomptalk_parser* parser, uint64_t method_id, const char *at, size_t length);
 
-int at_hdr_key(stomptalk_parser* parser, const char *at, size_t length);
+int at_hdr_key(stomptalk_parser* parser, uint64_t header_id, const char *at, size_t length);
 
 int at_hdr_val(stomptalk_parser* parser, const char *at, size_t length);
 
@@ -19,6 +19,7 @@ size_t connected_count = 0;
 size_t frame_count = 0;
 size_t header_num_id = 0;
 size_t content_length = 0;
+size_t application_json = 0;
 
 int main()
 {
@@ -97,12 +98,13 @@ int main()
     stomptalk_set_hook(parser, &hook, 0);
 
     // parse 100 million of frames
-    // on my pc it takes about 17 seconds
-    // time ./purestomp  16,72s user 0,00s system 99% cpu 16,740 total
-    // it over 5 million request per second
+    // on my pc it takes about 10 seconds
+    // time ./purestomp 10,12s user 0,00s system 99% cpu 10,129 total
+    // it over 9 million request per second
 
     size_t count = 10000000;
-    for (size_t i = 0; i < count; ++i)
+    size_t i = 0;
+    for ( ; i < count; ++i)
     {
         size_t needle = 0;
         const char *data = example10;
@@ -137,7 +139,8 @@ int main()
         }
     }
 
-    fprintf(stdout, "connected %zu, frame %zu\n", connected_count, frame_count);
+    fprintf(stdout, "connected %zu, frame %zu, json %zu, total %zu\n", 
+        connected_count, frame_count, application_json, content_length);
 
     stomptalk_parser_free(parser);
 
@@ -150,45 +153,33 @@ int at_frame(stomptalk_parser* parser, const char* at)
     return 0;
 }
 
-int at_method(stomptalk_parser* parser, const char* at, size_t length)
+int at_method(stomptalk_parser* parser, uint64_t method_id, const char* at, size_t length)
 {
-//    // detect method using memcmp
-//    static const char connected_method[] = "CONNECTED";
-//    static const size_t connected_method_size = sizeof(connected_method) - 1;
-//    if (length == connected_method_size)
-//    {
-//        if (memcmp(at, connected_method, length) == 0)
-//            ++connected_count;
-//    }
-
-    // or detect using stomptalk_eval_method
-    if (st_method_connected == stomptalk_eval_method(at, length))
-        ++connected_count;
+    if (st_method_connected == method_id)
+         ++connected_count;
 
     return 0;
 }
 
-int at_hdr_key(stomptalk_parser* parser, const char* at, size_t length)
+int at_hdr_key(stomptalk_parser* parser, uint64_t header_id, const char* at, size_t length)
 {
-    header_num_id = stomptalk_eval_header(at, length);
-
+    header_num_id = header_id;
     return 0;
 }
 
 int at_hdr_val(stomptalk_parser* parser, const char* at, size_t length)
 {
-    if (header_num_id == st_header_content_length)
+    if (st_header_content_type == header_num_id)
     {
-        header_num_id = st_header_none;
-
-        int64_t rc = stomptalk_antoull(at, length);
-        if (rc < 0)
+        static const char json[] = "application/json";
+        static const size_t json_size = sizeof(json) - 1;
+        if (json_size == length)
         {
-            // parse error
-            return -1;
+            if (memcmp(json, at, length) == 0)
+                ++application_json;
         }
 
-        content_length = (size_t)rc;
+        header_num_id = st_header_none;
     }
 
     return 0;
@@ -196,6 +187,7 @@ int at_hdr_val(stomptalk_parser* parser, const char* at, size_t length)
 
 int at_body(stomptalk_parser* parser, const char* at, size_t length)
 {
+    content_length += length;
     return 0;
 }
 
