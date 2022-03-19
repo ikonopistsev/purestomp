@@ -23,6 +23,8 @@ size_t application_json = 0;
 
 int main()
 {
+    fprintf(stdout, "stomptalk v%s\n", stomptalk_version());
+
     const char example10[] =
         "CONNECTED\r\n"
             "version:1.2\r\n"
@@ -99,6 +101,7 @@ int main()
 
     // parse 100 million of frames
     // % time ./purestomp
+    // stomptalk v1.7.0
     // connected 10000000, frame 100000000, json 10000000, total 670000000
     // ./purestomp  8,35s user 0,00s system 99% cpu 8,351 total
     // it over 10 million request per second
@@ -141,7 +144,7 @@ int main()
     }
 
     fprintf(stdout, "connected %zu, frame %zu, json %zu, total %zu\n", 
-        connected_count, frame_count, application_json, content_length);
+       connected_count, frame_count, application_json, content_length);
 
     stomptalk_parser_free(parser);
 
