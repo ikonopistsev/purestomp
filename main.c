@@ -23,6 +23,8 @@ size_t application_json = 0;
 
 int main()
 {
+    fprintf(stdout, "stomptalk v%s\n", stomptalk_version());
+
     const char example10[] =
         "CONNECTED\r\n"
             "version:1.2\r\n"
@@ -98,9 +100,11 @@ int main()
     stomptalk_set_hook(parser, &hook, 0);
 
     // parse 100 million of frames
-    // on my pc it takes about 10 seconds
-    // time ./purestomp 10,12s user 0,00s system 99% cpu 10,129 total
-    // it over 9 million request per second
+    // % time ./purestomp
+    // stomptalk v1.7.0
+    // connected 10000000, frame 100000000, json 10000000, total 670000000
+    // ./purestomp  8,35s user 0,00s system 99% cpu 8,351 total
+    // it over 10 million request per second
 
     size_t count = 10000000;
     size_t i = 0;
@@ -140,7 +144,7 @@ int main()
     }
 
     fprintf(stdout, "connected %zu, frame %zu, json %zu, total %zu\n", 
-        connected_count, frame_count, application_json, content_length);
+       connected_count, frame_count, application_json, content_length);
 
     stomptalk_parser_free(parser);
 
@@ -169,10 +173,10 @@ int at_hdr_key(stomptalk_parser* parser, uint64_t header_id, const char* at, siz
 
 int at_hdr_val(stomptalk_parser* parser, const char* at, size_t length)
 {
+    static const char json[] = "application/json";
+    static const size_t json_size = sizeof(json) - 1;
     if (st_header_content_type == header_num_id)
     {
-        static const char json[] = "application/json";
-        static const size_t json_size = sizeof(json) - 1;
         if (json_size == length)
         {
             if (memcmp(json, at, length) == 0)
