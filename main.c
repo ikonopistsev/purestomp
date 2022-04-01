@@ -17,7 +17,7 @@ int at_frame_end(stomptalk_parser* parser, const char*);
 
 size_t connected_count = 0;
 size_t frame_count = 0;
-size_t header_num_id = 0;
+uint64_t header_num_id = 0;
 size_t content_length = 0;
 size_t application_json = 0;
 
