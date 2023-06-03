@@ -21,11 +21,12 @@ uint64_t header_num_id = 0;
 size_t content_length = 0;
 size_t application_json = 0;
 
+
 int main()
 {
     fprintf(stdout, "stomptalk v%s\n", stomptalk_version());
 
-    const char example10[] =
+    static const char example10[] =
         "CONNECTED\r\n"
             "version:1.2\r\n"
             "session:STOMP-PARSER-TEST\r\n"
