@@ -21,7 +21,6 @@ uint64_t header_num_id = 0;
 size_t content_length = 0;
 size_t application_json = 0;
 
-
 int main()
 {
     fprintf(stdout, "stomptalk v%s\n", stomptalk_version());
@@ -81,6 +80,7 @@ int main()
             "subscription:0\r\n"
             "message-id:007\r\n"
             "destination:/queue/a\r\n"
+            "some\\cheader:part\\nvalue\r\n"
             "\r\n"
             "hello queue a\0"
         "MESSAGE\r\n"
