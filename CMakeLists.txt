@@ -8,4 +8,8 @@ add_executable(purestomp main.c)
 set_property(TARGET purestomp PROPERTY C_STANDARD 11)
 
 # we need to link against stomptalk and the C++ standard library
-target_link_libraries(purestomp PRIVATE stomptalk stdc++)
+if (MSVC)
+    target_link_libraries(purestomp PRIVATE stomptalk)
+else()
+    target_link_libraries(purestomp PRIVATE stomptalk stdc++)
+endif()
