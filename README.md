@@ -1,7 +1,3 @@
-[![linux](https://github.com/ikonopistsev/purestomp/workflows/linux/badge.svg?branch=main)](https://github.com/ikonopistsev/purestomp/actions?query=workflow%3Alinux)
-[![windows](https://github.com/ikonopistsev/purestomp/workflows/windows/badge.svg?branch=main)](https://github.com/ikonopistsev/purestomp/actions?query=workflow%3Awindows)
-[![macos](https://github.com/ikonopistsev/purestomp/workflows/macos/badge.svg?branch=main)](https://github.com/ikonopistsev/purestomp/actions?query=workflow%3Amacos)
-
 # purestomp
 
 An example of the [stomptalk](https://github.com/ikonopistsev/stomptalk) C API and a speed test.
